@@ -36,7 +36,6 @@ while True:
 
     if mode == 1:
         gray = cv2.cvtColor(output, cv2.COLOR_BGR2GRAY)
-        # Sobel edge detection
         sobelx = cv2.Sobel(gray, cv2.CV_64F, 1, 0, ksize=3)
         sobely = cv2.Sobel(gray, cv2.CV_64F, 0, 1, ksize=3)
         edges = cv2.magnitude(sobelx, sobely)
