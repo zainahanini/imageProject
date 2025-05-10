@@ -5,7 +5,7 @@ def quantize_gray(img, levels=4):
     step = 256 // levels
     return (img // step) * step
 
-def cartoon_filter_v3(img):
+def cartoon_filter(img):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     gray = cv2.medianBlur(gray, 7)
     edges = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 9, 9)
@@ -53,7 +53,7 @@ while True:
     elif mode == 4:
         output = cv2.GaussianBlur(output, (9, 9), 0)
     elif mode == 5:
-        output = cartoon_filter_v3(output)
+        output = cartoon_filter(output)
 
     cv2.imshow('video', output)
 
