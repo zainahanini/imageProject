@@ -5,11 +5,11 @@ def quantize_gray(img, levels=4):
     step = 256 // levels
     return (img // step) * step
 
-def cartoon_filter(img):
+def cartoon_filter_v3(img):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     gray = cv2.medianBlur(gray, 7)
     edges = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 9, 9)
-    color = cv2.bilateralFilter(img, 9, 200, 200)
+    color = cv2.blur(img, (9, 9))
     return cv2.bitwise_and(color, color, mask=edges)
 
 try:
@@ -36,7 +36,11 @@ while True:
 
     if mode == 1:
         gray = cv2.cvtColor(output, cv2.COLOR_BGR2GRAY)
-        edges = cv2.Canny(gray, 50, 150)
+        # Sobel edge detection
+        sobelx = cv2.Sobel(gray, cv2.CV_64F, 1, 0, ksize=3)
+        sobely = cv2.Sobel(gray, cv2.CV_64F, 0, 1, ksize=3)
+        edges = cv2.magnitude(sobelx, sobely)
+        edges = np.uint8(np.absolute(edges))
         output = cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
     elif mode == 2:
         gray = cv2.cvtColor(output, cv2.COLOR_BGR2GRAY)
@@ -49,7 +53,7 @@ while True:
     elif mode == 4:
         output = cv2.GaussianBlur(output, (9, 9), 0)
     elif mode == 5:
-        output = cartoon_filter(output)
+        output = cartoon_filter_v3(output)
 
     cv2.imshow('video', output)
 
@@ -69,4 +73,3 @@ while True:
 
 cap.release()
 cv2.destroyAllWindows()
-
