@@ -12,6 +12,15 @@ def cartoon_filter(img):
     color = cv2.bilateralFilter(img, 9, 200, 200)
     return cv2.bitwise_and(color, color, mask=edges)
 
+try:
+    user_levels = int(input("enter number of grayscale levels pls"))
+    if user_levels < 1 or user_levels > 256:
+        print("invalid value. using default 4.")
+        user_levels = 4
+except:
+    print("invalid input. using default 4.")
+    user_levels = 4
+
 cap = cv2.VideoCapture(0)
 if not cap.isOpened():
     exit()
@@ -31,7 +40,7 @@ while True:
         output = cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
     elif mode == 2:
         gray = cv2.cvtColor(output, cv2.COLOR_BGR2GRAY)
-        quantized = quantize_gray(gray)
+        quantized = quantize_gray(gray, levels=user_levels)
         output = cv2.cvtColor(quantized, cv2.COLOR_GRAY2BGR)
     elif mode == 3:
         gray = cv2.cvtColor(output, cv2.COLOR_BGR2GRAY)
@@ -60,3 +69,4 @@ while True:
 
 cap.release()
 cv2.destroyAllWindows()
+
